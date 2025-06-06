@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Bienvenido a SMAQ</title>
+    <meta http-equiv="refresh" content="2;url=dashboard.php">
+    <style>
+        body {
+            background: #3E2C23;
+            color: #7c3f00;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .bienvenida {
+            position: relative;
+            font-size: 4rem;
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 2px;
+            text-shadow: 0 4px 24px #0008;
+            z-index: 1;
+        }
+        .bienvenida::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 120vw;
+            height: 120vw;
+            background: #f5f3e7;
+            border-radius: 50%;
+            z-index: -1;
+            animation: in-circle-swoop-bg 2s cubic-bezier(.77,0,.18,1) both;
+            --circle-top-right-out: circle(0% at 100% 0%);
+            --circle-bottom-right-in: circle(150% at 100% 100%);
+        }
+        @keyframes in-circle-swoop-bg {
+            from {
+                clip-path: circle(0% at 100% 0%);
+            }
+            to {
+                clip-path: circle(150% at 100% 100%);
+            }
+        }
+        /* El texto también se anima */
+        .bienvenida[transition-style="in:custom:circle-swoop"] {
+            animation: in-circle-swoop 1.5s cubic-bezier(.77,0,.18,1) both;
+            --circle-top-right-out: circle(0% at 100% 0%);
+            --circle-bottom-right-in: circle(150% at 100% 100%);
+        }
+        @keyframes in-circle-swoop {
+            from {
+                clip-path: var(--circle-top-right-out);
+            }
+            to {
+                clip-path: var(--circle-bottom-right-in);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bienvenida" transition-style="in:custom:circle-swoop">
+        ¡Bienvenido a SMAQ!
+    </div>
+</body>
+</html>
