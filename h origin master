@@ -1,0 +1,31 @@
+[33mcommit 487a15c2a331c3c1cf6bc2a0273386974d77e131[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: Esteban-Rosas <estebanrosas94@gmail.com>
+Date:   Fri Jun 6 09:20:03 2025 -0500
+
+    Primera Versión
+
+ dashboard.php                                    | 106 [32m++++++++[m
+ equipos/componentes_equipo.php                   |  48 [32m++++[m
+ equipos/editar_equipo.php                        | 262 [32m++++++++++++++++++++[m
+ equipos/guardar_componente.php                   |  30 [32m+++[m
+ equipos/listado_equipos.php                      |  76 [32m++++++[m
+ equipos/registrar.php                            | 294 [32m+++++++++++++++++++++++[m
+ equipos/ver_equipo.php                           | 156 [32m++++++++++++[m
+ includes/conexion.php                            |  18 [32m++[m
+ includes/footer.php                              |   6 [32m+[m
+ includes/guardar_equipo.php                      | 139 [32m+++++++++++[m
+ includes/guardar_solicitud.php                   |  24 [32m++[m
+ includes/header.php                              |  91 [32m+++++++[m
+ includes/probar_conexion.php                     |   5 [32m+[m
+ includes/subir_foto.php                          |  32 [32m+++[m
+ index.html                                       |  70 [32m++++++[m
+ mantenimientos/guardar_solicitud.php             |   3 [32m+[m
+ mantenimientos/listado_mantenimiento.php         |  94 [32m++++++++[m
+ mantenimientos/orden_mantenimiento.php           | 239 [32m++++++++++++++++++[m
+ mantenimientos/solicitud_mantenimiento.php       | 122 [32m++++++++++[m
+ mantenimientos/uploads/evidencias/1000004410.jpg | Bin [31m0[m -> [32m2773463[m bytes
+ mantenimientos/uploads/facturas/1000004379.jpg   | Bin [31m0[m -> [32m5071403[m bytes
+ mantenimientos/visualizar_orden.php              | 127 [32m++++++++++[m
+ uploads/foto_68422fa63aae6.jpeg                  | Bin [31m0[m -> [32m70841[m bytes
+ uploads/foto_6842301d74221.jpeg                  | Bin [31m0[m -> [32m79139[m bytes
+ 24 files changed, 1942 insertions(+)
