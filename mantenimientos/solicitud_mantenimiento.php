@@ -66,6 +66,17 @@ $equipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <label for="codigo_equipo" class="form-label">Código del Equipo:</label>
                     <input type="text" id="codigo_equipo" class="form-control" readonly>
                 </div>
+                <div class="col-md-4">
+                    <label for="tipo_accion" class="form-label">Tipo de Acción:</label>
+                    <select name="tipo_accion" id="tipo_accion" class="form-select" required>
+                        <option value="">Seleccione</option>
+                        <option value="Preventivo">Preventivo</option>
+                        <option value="Correctivo">Correctivo</option>
+                        <option value="Predictivo">Predictivo</option>
+                        <option value="Inspección">Inspección</option>
+                        <option value="Calibración">Calibración</option>
+                    </select>
+                </div>
             </div>
             <div class="mb-3">
                 <label for="descripcion" class="form-label">Descripción del problema:</label>
@@ -119,4 +130,3 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
-<?php include '../includes/footer.php'; ?>
