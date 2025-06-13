@@ -5,7 +5,10 @@ include_once('../includes/conexion.php');
 // Obtener el parámetro de ordenamiento de la URL, si existe
 $orden = isset($_GET['orden']) ? $_GET['orden'] : 'fecha';
 
-// Construir la consulta SQL con base en el orden seleccionado
+// Obtener el parámetro de búsqueda unificado
+$buscar = isset($_GET['buscar']) ? $_GET['buscar'] : '';
+
+// Construir la consulta SQL
 $sql = "
     SELECT 
         sm.id AS id_solicitud,
@@ -16,15 +19,29 @@ $sql = "
         sm.descripcion_problema,
         sm.operario,
         sm.estado,
+        sm.tipo_mantenimiento,
         om.id AS id_orden
     FROM solicitudes_mantenimiento sm
     INNER JOIN equipos e ON sm.equipo_id = e.id
     INNER JOIN ubicaciones u ON e.ubicacion_id = u.id
     LEFT JOIN ordenes_mantenimiento om ON om.solicitud_id = sm.id
-    ORDER BY $orden DESC
+    WHERE 1=1
 ";
 
-$resultado = $conexion->query($sql);
+if (!empty($buscar)) {
+    $sql .= " AND (e.nombre ILIKE :buscar OR u.nombre ILIKE :buscar)";
+}
+
+// Agregar ordenamiento
+$sql .= " ORDER BY $orden DESC";
+
+$stmt = $conexion->prepare($sql);
+
+if (!empty($buscar)) {
+    $stmt->bindValue(':buscar', "%$buscar%", PDO::PARAM_STR);
+}
+
+$stmt->execute();
 ?>
 
 <!DOCTYPE html>
@@ -38,14 +55,33 @@ $resultado = $conexion->query($sql);
     <div class="container mt-4">
         <h2>Listado de Solicitudes de Mantenimiento</h2>
 
-        <!-- Formulario para seleccionar el orden -->
+        <!-- Formulario para seleccionar el orden y buscar -->
         <form method="get" class="mb-3">
-            <label for="orden" class="form-label">Ordenar por:</label>
-            <select name="orden" id="orden" class="form-select d-inline-block w-auto" onchange="this.form.submit()">
-                <option value="fecha" <?= $orden == 'fecha' ? 'selected' : '' ?>>Fecha</option>
-                <option value="nombre_equipo" <?= $orden == 'nombre_equipo' ? 'selected' : '' ?>>Equipo</option>
-                <option value="ubicacion_equipo" <?= $orden == 'ubicacion_equipo' ? 'selected' : '' ?>>Ubicación</option>
-            </select>
+            <div class="row g-2 align-items-end">
+                <div class="col-md-6">
+                    <label for="buscar" class="form-label mb-0">Buscar</label>
+                    <div class="input-group">
+                        <input type="text" name="buscar" id="buscar" class="form-control"
+                               value="<?= isset($_GET['buscar']) ? htmlspecialchars($_GET['buscar']) : '' ?>">
+                        <button type="submit" class="btn btn-primary btn-sm" title="Buscar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-search" viewBox="0 0 16 16">
+                                <path
+                                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.099zm-5.442 1.398a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="orden" class="form-label mb-0">Ordenar por:</label>
+                    <select name="orden" id="orden" class="form-select"
+                            onchange="this.form.submit()">
+                        <option value="fecha" <?= $orden == 'fecha' ? 'selected' : '' ?>>Fecha</option>
+                        <option value="nombre_equipo" <?= $orden == 'nombre_equipo' ? 'selected' : '' ?>>Equipo</option>
+                        <option value="ubicacion_equipo" <?= $orden == 'ubicacion_equipo' ? 'selected' : '' ?>>Ubicación</option>
+                    </select>
+                </div>
+            </div>
         </form>
 
         <div class="table-responsive">
@@ -55,6 +91,7 @@ $resultado = $conexion->query($sql);
                         <th>Fecha</th>
                         <th>Equipo</th>
                         <th>Ubicación</th>
+                        <th>Tipo de Acción</th>
                         <th>Descripción del Problema</th>
                         <th>Operario</th>
                         <th>Estado</th>
@@ -62,11 +99,12 @@ $resultado = $conexion->query($sql);
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($fila = $resultado->fetch(PDO::FETCH_ASSOC)): ?>
+                    <?php while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
                         <tr>
                             <td><?php echo htmlspecialchars($fila['fecha']); ?></td>
                             <td><?php echo htmlspecialchars($fila['nombre_equipo']); ?></td>
                             <td><?php echo htmlspecialchars($fila['ubicacion_equipo']); ?></td>
+                            <td><?php echo htmlspecialchars($fila['tipo_mantenimiento'] ?? ''); ?></td> <!-- Nuevo -->
                             <td><?php echo htmlspecialchars($fila['descripcion_problema']); ?></td>
                             <td><?php echo htmlspecialchars($fila['operario']); ?></td>
                             <td><?php echo htmlspecialchars($fila['estado']); ?></td>

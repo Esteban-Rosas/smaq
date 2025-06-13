@@ -72,7 +72,7 @@ $equipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <textarea name="descripcion" id="descripcion" class="form-control" rows="5" required></textarea>
             </div>
             <div class="mb-3">
-                <label for="operario" class="form-label">Nombre del operario:</label>
+                <label for="operario" class="form-label">Nombre del solicitante:</label>
                 <input type="text" name="operario" id="operario" class="form-control" required>
             </div>
             <div class="d-flex gap-2">

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta http-equiv="refresh" content="2;url=../dashboard.php">
+    <title>Redirigiendo...</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #007bff 0%, #6c63ff 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .redirect-box {
+            background: rgba(255,255,255,0.1);
+            border-radius: 18px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        .redirect-box h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+        .redirect-box p {
+            font-size: 1.1rem;
+            margin-bottom: 0;
+        }
+        /* Loader animado tipo barra diagonal */
+        .loader {
+            width: calc(80px / cos(45deg));
+            height: 14px;
+            background: repeating-linear-gradient(-45deg,#fff 0 15px,#ffffff00 0 20px) left/200% 100%;
+            animation: l3 2s infinite linear;
+            margin: 1.5rem auto 0 auto;
+            border-radius: 7px;
+        }
+        @keyframes l3 {
+            100% {background-position:right}
+        }
+    </style>
+</head>
+<body>
+    <div class="redirect-box">
+        <h1>Redirigiendo...</h1>
+        <p>Redirigiendo al panel principal. Por favor, espera un momento...</p>
+        <div class="loader"></div>
+    </div>
+</body>
+</html>

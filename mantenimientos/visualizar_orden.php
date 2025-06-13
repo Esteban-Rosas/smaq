@@ -59,8 +59,10 @@ if (!$orden) {
                 <td><?php echo htmlspecialchars($orden['codigo_equipo']); ?></td>
             </tr>
             <tr>
+                <th>Acción de Mantenimiento</th>
+                <td><?php echo htmlspecialchars($orden['accion_mantenimiento']); ?></td>
                 <th>Responsable</th>
-                <td colspan="3"><?php echo htmlspecialchars($orden['realizado_por']); ?></td>
+                <td><?php echo htmlspecialchars($orden['realizado_por']); ?></td>
             </tr>
             <tr>
                 <th>Motivo</th>
