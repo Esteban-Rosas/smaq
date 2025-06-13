@@ -170,6 +170,7 @@ if (isset($_SESSION['mensaje_exito'])) {
                             <option>Agua</option>
                             <option>Vapor</option>
                             <option>Gas</option>
+				<option>Gas</option>
                             <option>Otro</option>
                         </select>
                     </div>
