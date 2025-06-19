@@ -47,7 +47,6 @@ if (isset($_SESSION['mensaje_exito'])) {
                             <th>Inicio</th>
                             <th>Fin</th>
                             <th>Responsable</th>
-                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -61,10 +60,6 @@ if (isset($_SESSION['mensaje_exito'])) {
                                     <td><?= htmlspecialchars($row['fecha_inicio']) ?></td>
                                     <td><?= htmlspecialchars($row['fecha_fin']) ?></td>
                                     <td><?= htmlspecialchars($row['responsable']) ?></td>
-                                    <td>
-                                        <!-- Aquí podrías enlazar un detalle si lo implementas -->
-                                        <a href="ver_cronograma.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-info">Ver</a>
-                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
@@ -73,8 +68,14 @@ if (isset($_SESSION['mensaje_exito'])) {
                     </tbody>
                 </table>
             </div>
+            <a href="crear_cronograma.php" class="btn btn-secondary mt-3">Crear Cronograma</a>
             <a href="../dashboard.php" class="btn btn-secondary mt-3">Volver al Dashboard</a>
         </div>
+    </div>
+    <div class="d-flex justify-content-end mt-3">
+        <a href="visualizar_cronograma.php" class="btn btn-warning btn-lg float-end">
+            Ver cronograma maestro
+        </a>
     </div>
 </div>
 </body>

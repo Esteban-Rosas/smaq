@@ -293,3 +293,44 @@ if (isset($_SESSION['mensaje_exito'])) {
 
 
 <?php include '../includes/footer.php'; ?>
+
+<?php
+// Lógica para manejar la subida y redimensionamiento de la foto
+if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+    $nombre_imagen = uniqid('eq_') . '_' . basename($_FILES['foto']['name']);
+    $ruta_destino = "../uploads/" . $nombre_imagen;
+
+    if (move_uploaded_file($_FILES['foto']['tmp_name'], $ruta_destino)) {
+        // Redimensionar si es necesario
+        list($ancho, $alto, $tipo) = getimagesize($ruta_destino);
+        $max_ancho = 1024;
+        if ($ancho > $max_ancho) {
+            $nuevo_alto = intval($alto * $max_ancho / $ancho);
+
+            switch ($tipo) {
+                case IMAGETYPE_JPEG:
+                    $origen = imagecreatefromjpeg($ruta_destino);
+                    break;
+                case IMAGETYPE_PNG:
+                    $origen = imagecreatefrompng($ruta_destino);
+                    break;
+                default:
+                    $origen = null;
+            }
+
+            if ($origen) {
+                $imagen_redimensionada = imagecreatetruecolor($max_ancho, $nuevo_alto);
+                imagecopyresampled($imagen_redimensionada, $origen, 0, 0, 0, 0, $max_ancho, $nuevo_alto, $ancho, $alto);
+
+                if ($tipo == IMAGETYPE_JPEG) {
+                    imagejpeg($imagen_redimensionada, $ruta_destino, 85);
+                } elseif ($tipo == IMAGETYPE_PNG) {
+                    imagepng($imagen_redimensionada, $ruta_destino, 8);
+                }
+                imagedestroy($imagen_redimensionada);
+                imagedestroy($origen);
+            }
+        }
+        // Guarda $nombre_imagen en la base de datos como nombre de la foto
+    }
+}

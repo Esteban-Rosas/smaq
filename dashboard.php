@@ -37,6 +37,15 @@
             font-weight: bold;
             letter-spacing: 1px;
         }
+        .btn-naranja-pastel {
+            background-color: #FFA726 !important;
+            color: #fff !important;
+            border: none;
+        }
+        .btn-naranja-pastel:hover, .btn-naranja-pastel:focus {
+            background-color: #fb8c00 !important;
+            color: #fff !important;
+        }
         @media (max-width: 767.98px) {
             .dashboard-card {
                 padding: 2rem 1rem;
@@ -96,6 +105,27 @@
                         </a>
                         <a href="mantenimientos/listado_mantenimiento.php" class="btn btn-outline-success btn-dashboard">
                             <i class="bi bi-list-check me-2"></i> Listado de Mantenimientos
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Módulo Cronograma -->
+            <div class="col-12 col-md-5">
+                <div class="card dashboard-card text-center p-4">
+                    <div class="dashboard-icon mb-3" style="background-color: #FFA726;">
+                        <i class="bi bi-calendar3 text-white"></i>
+                    </div>
+                    <h3 class="fw-bold mb-2">Cronograma</h3>
+                    <p class="text-secondary mb-4">Visualice y gestione el cronograma maestro de mantenimientos.</p>
+                    <div class="d-grid gap-2">
+                        <a href="cronogramas/visualizar_cronograma.php" class="btn btn-naranja-pastel btn-dashboard">
+                            <i class="bi bi-calendar-range me-2"></i> Ver cronograma maestro
+                        </a>
+                        <a href="cronogramas/listar_cronograma.php" class="btn btn-warning btn-dashboard text-white">
+                            <i class="bi bi-calendar-range me-2"></i> Ver Cronograma
+                        </a>
+                        <a href="cronogramas/crear_cronograma.php" class="btn btn-warning btn-dashboard text-white">
+                            <i class="bi bi-calendar-plus me-2"></i> Crear Cronograma
                         </a>
                     </div>
                 </div>

@@ -1,5 +1,6 @@
 <?php
 include '../includes/conexion.php';
+
 session_start();
 
 $equipo_id = $_POST['equipo_id'];
@@ -35,18 +36,19 @@ $existe = $stmt_check->fetchColumn();
 
 if ($existe == 0) {
     // Insertar solo si no existe una solicitud similar
-    $sql2 = "INSERT INTO solicitudes_mantenimiento (fecha, equipo_id, descripcion_problema, operario, estado)
-             VALUES (:fecha, :equipo_id, :descripcion, :operario, :estado)";
+    $sql2 = "INSERT INTO solicitudes_mantenimiento (fecha, equipo_id, descripcion_problema, operario, estado, tipo_mantenimiento)
+             VALUES (:fecha, :equipo_id, :descripcion, :operario, :estado, :tipo_accion)";
     $stmt2 = $conexion->prepare($sql2);
     $stmt2->execute([
         ':fecha' => $fecha_inicio,
         ':equipo_id' => $equipo_id,
         ':descripcion' => $descripcion,
         ':operario' => $responsable,
-        ':estado' => 'programado'
+        ':estado' => 'programado',
+        ':tipo_accion' => 'Preventivo'
     ]);
 }
 
 $_SESSION['mensaje_exito'] = "¡Cronograma guardado correctamente!";
-header("Location: crear_cronograma.php");
+header("Location: listar_cronograma.php");
 exit;

@@ -26,6 +26,7 @@ $sql = "
     INNER JOIN ubicaciones u ON e.ubicacion_id = u.id
     LEFT JOIN ordenes_mantenimiento om ON om.solicitud_id = sm.id
     WHERE 1=1
+      AND sm.fecha <= CURRENT_DATE
 ";
 
 if (!empty($buscar)) {
