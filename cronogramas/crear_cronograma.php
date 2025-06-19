@@ -1,19 +1,27 @@
 <?php
-// cronogramas/crear_cronograma.php
-include '../includes/conexion.php';
-include '../includes/header.php';
+include_once('../includes/conexion.php');
+include_once('../includes/header.php');
 
-// Obtener lista de equipos
-$sql = "SELECT id, nombre, codigo FROM equipos ORDER BY nombre ASC";
-$stmt = $conexion->query($sql);
-$equipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Obtener equipos
+$equipos = $conexion->query("SELECT id, nombre FROM equipos ORDER BY nombre")->fetchAll(PDO::FETCH_ASSOC);
 
-// Mensaje de éxito
-$mensaje_exito = '';
-if (isset($_SESSION['mensaje_exito'])) {
-    $mensaje_exito = $_SESSION['mensaje_exito'];
-    unset($_SESSION['mensaje_exito']);
+// Obtener cronogramas con JOIN para traer nombre del equipo
+$sql = "SELECT c.equipo_id, c.tipo_mantenimiento, c.fecha_inicio, c.fecha_fin, e.nombre AS equipo_nombre
+        FROM cronogramas c
+        JOIN equipos e ON c.equipo_id = e.id";
+$cronogramas = $conexion->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+
+// Organizar datos por equipo, mes y semana
+$data = [];
+foreach ($cronogramas as $row) {
+    $inicio = strtotime($row['fecha_inicio']);
+    $month = date('n', $inicio); // Número del mes
+    $week = ceil(date('j', $inicio) / 7); // Semana dentro del mes (1 a 5)
+    $key = $month . '-' . $week;
+
+    $data[$row['equipo_id']][$key][] = strtolower($row['tipo_mantenimiento']);
 }
+$mensaje_exito = ""; // O null, según prefieras
 ?>
 
 <!DOCTYPE html>
@@ -43,7 +51,7 @@ if (isset($_SESSION['mensaje_exito'])) {
                         <option value="">Seleccione un equipo</option>
                         <?php foreach ($equipos as $equipo): ?>
                             <option value="<?= $equipo['id'] ?>">
-                                <?= htmlspecialchars($equipo['nombre']) ?> (<?= htmlspecialchars($equipo['codigo']) ?>)
+                                <?= htmlspecialchars($equipo['nombre']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -53,11 +61,10 @@ if (isset($_SESSION['mensaje_exito'])) {
                     <label for="tipo_mantenimiento" class="form-label">Tipo de Mantenimiento</label>
                     <select name="tipo_mantenimiento" id="tipo_mantenimiento" class="form-select" required>
                         <option value="">Seleccione</option>
-                        <option value="preventivo">Preventivo</option>
-                        <option value="correctivo">Correctivo</option>
-                        <option value="predictivo">Predictivo</option>
-                        <option value="calibración">Calibración</option>
-                        <option value="inspección">Inspección</option>
+                        <option value="Mecánico">Mecánico</option>
+                        <option value="Eléctrico">Eléctrico</option>
+                        <option value="Lubricación">Lubricación</option>
+                        <option value="Limpieza">Limpieza</option>
                     </select>
                 </div>
                     
@@ -82,7 +89,7 @@ if (isset($_SESSION['mensaje_exito'])) {
                 </div>
 
                 <button type="submit" class="btn btn-success">Guardar Cronograma</button>
-                <a href="../dashboard.php" class="btn btn-secondary">Cancelar</a>
+                <a href="listar_cronograma.php" class="btn btn-secondary">Cancelar</a>
             </form>
         </div>
     </div>

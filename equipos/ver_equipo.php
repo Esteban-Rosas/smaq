@@ -126,16 +126,23 @@ $componentes = $stmt_comp->fetchAll(PDO::FETCH_ASSOC);
         <div class="section-title">Componentes del Equipo</div>
         <div class="row">
             <?php foreach ($componentes as $componente): ?>
-                <div class="col-md-6 mb-3">
-                    <div class="card h-100">
-                        <?php if (!empty($componente['imagen'])): ?>
-                            <img src="<?= str_replace('..', '/smaq', htmlspecialchars($componente['imagen'])) ?>" class="card-img-top" alt="Imagen del componente" style="max-height:180px;object-fit:contain;">
-                        <?php endif; ?>
-                        <div class="card-body">
-                            <h6 class="card-title"><?= htmlspecialchars($componente['nombre']) ?></h6>
-                            <?php if (!empty($componente['descripcion'])): ?>
-                                <p class="card-text"><?= nl2br(htmlspecialchars($componente['descripcion'])) ?></p>
-                            <?php endif; ?>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title"><?= htmlspecialchars($componente['nombre']) ?></h5>
+                        <p class="card-text"><?= htmlspecialchars($componente['descripcion']) ?></p>
+                        <!-- Otros datos del componente aquí -->
+
+                        <!-- Botón para editar el componente -->
+                        <div class="mt-3 text-end">
+                            <button 
+                                class="btn btn-primary btn-sm btn-editar-componente"
+                                data-id="<?= $componente['id'] ?>"
+                                data-nombre="<?= htmlspecialchars($componente['nombre']) ?>"
+                                data-descripcion="<?= htmlspecialchars($componente['descripcion']) ?>"
+                                data-equipo-id="<?= $componente['equipo_id'] ?>"
+                            >
+                                Editar componente
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -146,11 +153,59 @@ $componentes = $stmt_comp->fetchAll(PDO::FETCH_ASSOC);
         <p class="text-muted">No hay componentes registrados para este equipo.</p>
     <?php endif; ?>
 
-    <!-- Botón volver -->
+    <!-- Botones de acción -->
     <div class="text-center mt-4">
         <a href="listado_equipos.php" class="btn btn-secondary">Volver al listado</a>
+        <a href="../mantenimientos/mantenimientos_realizados.php?equipo_id=<?= $equipo['id']; ?>" class="btn btn-success mb-3">
+            Ver mantenimientos realizados
+        </a>
     </div>
 
 </div>
+
+<!-- Modal de edición -->
+<div class="modal fade" id="modalEditarComponente" tabindex="-1" aria-labelledby="modalEditarComponenteLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="formEditarComponente" method="post" action="editar_componente.php">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalEditarComponenteLabel">Editar componente</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="id" id="editComponenteId">
+          <input type="hidden" name="equipo_id" id="editComponenteEquipoId">
+          <div class="mb-3">
+            <label for="editComponenteNombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" name="nombre" id="editComponenteNombre" required>
+          </div>
+          <div class="mb-3">
+            <label for="editComponenteDescripcion" class="form-label">Descripción</label>
+            <textarea class="form-control" name="descripcion" id="editComponenteDescripcion" rows="3" required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Guardar cambios</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.querySelectorAll('.btn-editar-componente').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.getElementById('editComponenteId').value = this.dataset.id;
+        document.getElementById('editComponenteNombre').value = this.dataset.nombre;
+        document.getElementById('editComponenteDescripcion').value = this.dataset.descripcion;
+        document.getElementById('editComponenteEquipoId').value = this.dataset.equipoId; // <-- Aquí
+        var modal = new bootstrap.Modal(document.getElementById('modalEditarComponente'));
+        modal.show();
+    });
+});
+</script>
+
 </body>
 </html>
