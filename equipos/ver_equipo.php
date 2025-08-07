@@ -1,5 +1,10 @@
 <?php
+include '../includes/proteccion.php';
+?>
+
+<?php
 include '../includes/conexion.php';
+include '../includes/header.php';
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     die("ID de equipo no válido.");

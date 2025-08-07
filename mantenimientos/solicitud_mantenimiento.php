@@ -1,5 +1,8 @@
 <?php
-session_start();
+include '../includes/proteccion.php';
+?>
+
+<?php
 include '../includes/header.php';
 include_once('../includes/conexion.php');
 

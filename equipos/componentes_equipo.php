@@ -1,4 +1,8 @@
 <?php
+include '../includes/proteccion.php';
+?>
+
+<?php
 // filepath: c:\xampp\htdocs\smaq\equipos\componentes_equipo.php
 include '../includes/conexion.php';
 

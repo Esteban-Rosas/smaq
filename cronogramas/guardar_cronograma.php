@@ -1,4 +1,8 @@
 <?php
+include '../includes/proteccion.php';
+?>
+
+<?php
 include '../includes/conexion.php';
 
 session_start();

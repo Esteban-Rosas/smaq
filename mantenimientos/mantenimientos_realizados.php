@@ -1,4 +1,8 @@
 <?php
+include '../includes/proteccion.php';
+?>
+
+<?php
 // filepath: c:\xampp\htdocs\smaq\mantenimientos\listado_realizados.php
 include_once('../includes/conexion.php');
 include_once('../includes/header.php');

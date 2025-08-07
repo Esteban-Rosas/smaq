@@ -1,3 +1,8 @@
+
+<?php
+include '../includes/proteccion.php';
+?>
+
 <?php
 include_once('../includes/conexion.php');
 include_once('../includes/header.php');

@@ -1,3 +1,7 @@
+<?php
+include 'includes/proteccion.php';
+$esIngeniero = (isset($_SESSION['usuario_rol']) && strtolower(trim($_SESSION['usuario_rol'])) === 'ingeniero');
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -121,12 +125,14 @@
                         <a href="cronogramas/visualizar_cronograma.php" class="btn btn-naranja-pastel btn-dashboard">
                             <i class="bi bi-calendar-range me-2"></i> Ver cronograma maestro
                         </a>
-                        <a href="cronogramas/listar_cronograma.php" class="btn btn-warning btn-dashboard text-white">
-                            <i class="bi bi-calendar-range me-2"></i> Ver Cronograma
-                        </a>
-                        <a href="cronogramas/crear_cronograma.php" class="btn btn-warning btn-dashboard text-white">
-                            <i class="bi bi-calendar-plus me-2"></i> Crear Cronograma
-                        </a>
+                        <?php if ($esIngeniero): ?>
+                            <a href="cronogramas/listar_cronograma.php" class="btn btn-warning btn-dashboard text-white">
+                                <i class="bi bi-calendar-range me-2"></i> Ver Cronograma
+                            </a>
+                            <a href="cronogramas/crear_cronograma.php" class="btn btn-warning btn-dashboard text-white">
+                                <i class="bi bi-calendar-plus me-2"></i> Crear Cronograma
+                            </a>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
