@@ -1,11 +1,11 @@
 <?php
 // includes/conexion.php
 
-$host = 'localhost';     // o IP de tu servidor
+$host = 'dpg-d2ah3gjuibrs73ael9vg-a';     // o IP de tu servidor
 $port = '5432';          // Puerto por defecto de PostgreSQL
 $dbname = 'smaq';        // Nombre de tu base de datos
-$user = 'postgres';    // Reemplaza con tu usuario PostgreSQL
-$password = 'toor'; // Reemplaza con tu contraseña
+$user = 'smaq_user';    // Reemplaza con tu usuario PostgreSQL
+$password = 'FBARdr3pMYwg04QVZkJyJ1ZJxLY8aDeh'; // Reemplaza con tu contraseña
 
 try {
     $conexion = new PDO("pgsql:host=$host;port=$port;dbname=$dbname", $user, $password);
