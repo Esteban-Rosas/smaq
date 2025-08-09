@@ -1,3 +1,4 @@
+<?php
 $host = 'dpg-d2ah3gjuibrs73ael9vg-a.oregon-postgres.render.com';
 $port = '5432';
 $dbname = 'smaq';
@@ -16,3 +17,4 @@ try {
     header("Location: error.php"); // Redirige a una página de error
     exit;
 }
+?>
