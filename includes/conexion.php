@@ -1,18 +1,18 @@
-<?php
-// includes/conexion.php
-
-$host = 'dpg-d2ah3gjuibrs73ael9vg-a.oregon-postgres.render.com';     // o IP de tu servidor
-$port = '5432';          // Puerto por defecto de PostgreSQL
-$dbname = 'smaq';        // Nombre de tu base de datos
-$user = 'smaq_user';    // Reemplaza con tu usuario PostgreSQL
-$password = 'FBARdr3pMYwg04QVZkJyJ1ZJxLY8aDeh'; // Reemplaza con tu contraseña
+$host = 'dpg-d2ah3gjuibrs73ael9vg-a.oregon-postgres.render.com';
+$port = '5432';
+$dbname = 'smaq';
+$user = 'smaq_user';
+$password = 'FBARdr3pMYwg04QVZkJyJ1ZJxLY8aDeh';
 
 try {
-    $conexion = new PDO("pgsql:host=$host;port=$port;dbname=$dbname", $user, $password);
+    $conexion = new PDO(
+        "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require", // Fuerza SSL
+        $user,
+        $password
+    );
     $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    // echo "Conexión exitosa"; // Puedes descomentar para probar
 } catch (PDOException $e) {
-    echo "Error en la conexión: " . $e->getMessage();
+    error_log("Error de conexión: " . $e->getMessage()); // Mejor para producción
+    header("Location: error.php"); // Redirige a una página de error
     exit;
 }
-?>
