@@ -6,3 +6,4 @@ COPY . /var/www/html/
 
 # Habilita mod_rewrite si lo necesitas
 RUN a2enmod rewrite
+RUN apt-get update && apt-get install -y php-pgsql
