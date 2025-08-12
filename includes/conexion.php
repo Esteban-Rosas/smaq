@@ -1,10 +1,10 @@
 <?php
-// Verifica que NO haya espacios/lineas vacías antes de esta línea
-$host = 'dpg-d2ah3gjuibrs73ael9vg-a.oregon-postgres.render.com';
-$port = '5432';
-$dbname = 'smaq';
-$user = 'smaq_user';
-$password = 'FBARdr3pMYwg04QVZkJyJ1ZJxLY8aDeh';
+
+$host = 'localhost';     // o IP de tu servidor
+$port = '5432';          // Puerto por defecto de PostgreSQL
+$dbname = 'smaq';        // Nombre de tu base de datos
+$user = 'postgres';    // Reemplaza con tu usuario PostgreSQL
+$password = '3013162608Zel@'; // Reemplaza con tu contraseña
 
 try {
     $conexion = new PDO(
