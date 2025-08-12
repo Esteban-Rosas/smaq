@@ -1,4 +1,8 @@
 <?php
+include '../includes/proteccion.php';
+?>
+
+<?php
 include_once('../includes/conexion.php');
 include_once('../includes/header.php'); 
 
@@ -43,6 +47,10 @@ $iniciales = [
     'lubricación' => 'L',
     'limpieza' => 'I'
 ];
+?>
+
+<?php
+$esIngeniero = (isset($_SESSION['usuario_rol']) && strtolower(trim($_SESSION['usuario_rol'])) === 'ingeniero');
 ?>
 
 <!DOCTYPE html>
@@ -142,11 +150,34 @@ $iniciales = [
     </div>
 
     <!-- Después de la tabla, agrega el botón de volver -->
-    <div class="d-flex justify-content-end mt-3">
-        <a href="listar_cronograma.php" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i> Volver a listado de cronogramas
-        </a>
+    <?php if ($esIngeniero): ?>
+        <div class="d-flex justify-content-end mt-3">
+            <a href="listar_cronograma.php" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver a listado de cronogramas
+            </a>
+        </div>
+    <?php endif; ?>
+    <a href="exportar_cronograma.php" class="btn btn-success">
+    <i class="bi bi-download"></i> Exportar a Excel
+</a>
+
+<!-- Modal de confirmación PDF -->
+<div class="modal fade" id="modalPdfGuardado" tabindex="-1" aria-labelledby="modalPdfGuardadoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center">
+      <div class="modal-header border-0 justify-content-center">
+        <h5 class="modal-title" id="modalPdfGuardadoLabel">
+          <i class="bi bi-file-earmark-pdf text-danger" style="font-size:2rem;"></i>
+        </h5>
+      </div>
+      <div class="modal-body">
+        <p class="mb-3 fw-bold">¡El archivo PDF se guardó correctamente!</p>
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal">Aceptar</button>
+      </div>
     </div>
+  </div>
+</div>
+
 </div>
 
 <script>
@@ -182,6 +213,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Mostrar por defecto T1
     actualizarTabla(1);
+
+    // Mostrar modal si se guardó el PDF
+    if (window.location.search.includes('pdf=ok')) {
+        var modal = new bootstrap.Modal(document.getElementById('modalPdfGuardado'));
+        modal.show();
+    }
 });
 </script>
 </body>

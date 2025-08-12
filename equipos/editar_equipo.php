@@ -1,4 +1,8 @@
 <?php
+include '../includes/proteccion.php';
+?>
+
+<?php
 // filepath: c:\xampp\htdocs\smaq\equipos\editar_equipo.php
 session_start();
 include '../includes/header.php';

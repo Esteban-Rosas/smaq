@@ -1,4 +1,8 @@
 <?php
+include '../includes/proteccion.php';
+?>
+
+<?php
 include '../includes/conexion.php';
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
