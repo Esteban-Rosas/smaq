@@ -1,11 +1,9 @@
 <?php
 include '../includes/proteccion.php';
-?>
-
-<?php
 include '../includes/header.php';
 include_once('../includes/conexion.php');
 
+$usuario_sesion = $_SESSION['usuario_nombre'] ?? ''; 
 // Obtener ubicaciones
 $sql_ubicaciones = "SELECT id, nombre FROM ubicaciones ORDER BY nombre ASC";
 $stmt_ubicaciones = $conexion->query($sql_ubicaciones);
@@ -85,13 +83,11 @@ $equipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <label for="descripcion" class="form-label">Descripción del problema:</label>
                 <textarea name="descripcion" id="descripcion" class="form-control" rows="5" required></textarea>
             </div>
-            <div class="mb-3">
-                <label for="operario" class="form-label">Nombre del solicitante:</label>
-                <input type="text" name="operario" id="operario" class="form-control" required>
-            </div>
+            <!-- Campo oculto con el nombre del usuario de sesión -->
+            <input type="hidden" name="operario" value="<?= htmlspecialchars($usuario_sesion) ?>">
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
-                <a href="../dashboard.php" class="btn btn-secondary">Volver</a>
+                <a href="../dashboard.  php" class="btn btn-secondary">Volver</a>
             </div>
         </form>
     </div>
