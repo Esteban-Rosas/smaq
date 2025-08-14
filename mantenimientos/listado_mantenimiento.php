@@ -132,6 +132,3 @@ $stmt->execute();
     </div>
 </body>
 </html>
-
-
-
