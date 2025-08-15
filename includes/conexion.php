@@ -1,22 +1,21 @@
 <?php
-// Verifica que NO haya espacios/lineas vacías antes de esta línea
-$host = 'dpg-d2ah3gjuibrs73ael9vg-a.oregon-postgres.render.com';
-$port = '5432';
-$dbname = 'smaq';
-$user = 'smaq_user';
-$password = 'FBARdr3pMYwg04QVZkJyJ1ZJxLY8aDeh';
+// Configuración de la base de datos
+$host = "localhost";
+$port = "5432";
+$dbname = "smaq"; // Cambia por el nombre real de tu base de datos
+$user = "postgres"; // Usuario de la base de datos
+$password = "toor"; // Contraseña del usuario
 
 try {
-    $conexion = new PDO(
-        "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require",
-        $user,
-        $password
-    );
+    // Crear conexión PDO
+    $conexion = new PDO("pgsql:host=$host;port=$port;dbname=$dbname", $user, $password);
+    
+    // Configuración de PDO
     $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    return $conexion; // Retorna la conexión
+    $conexion->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
 } catch (PDOException $e) {
-    // Log del error sin generar salida
-    error_log("Error de conexión: " . $e->getMessage());
-    throw new PDOException("Error de base de datos"); // Lanza excepción en lugar de redirigir
+    echo "Error de conexión: " . $e->getMessage();
+    exit;
 }
-// Asegúrate de NO tener espacios/líneas después de este cierre ?>
+?>

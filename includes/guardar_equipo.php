@@ -1,11 +1,18 @@
 <?php
-require_once '../includes/conexion.php';
+
+require_once __DIR__ . '/conexion.php';
 session_start();
 
-// Crear directorio de uploads si no existe
-$directorio = '../uploads/';
-if (!file_exists($directorio)) {
-    mkdir($directorio, 0777, true);
+// Crear directorios si no existen
+$directorioImagenes = '../uploads/';
+$directorioPDFs = '../uploads/pdf/';
+
+if (!file_exists($directorioImagenes)) {
+    mkdir($directorioImagenes, 0777, true);
+}
+
+if (!file_exists($directorioPDFs)) {
+    mkdir($directorioPDFs, 0777, true);
 }
 
 // Manejo de la foto
@@ -17,45 +24,58 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
 
     // Validar tipo de archivo
     $tiposPermitidos = ['jpg', 'jpeg', 'png', 'gif'];
-    if (!in_array($extension, $tiposPermitidos)) {
-        die("Tipo de archivo no permitido.");
-    }
+    if (in_array($extension, $tiposPermitidos)) {
+        // Generar nombre único
+        $nuevoNombre = uniqid('foto_', true) . '.' . $extension;
+        $rutaDestino = $directorioImagenes . $nuevoNombre;
 
-    // Generar nombre único
-    $nuevoNombre = uniqid('foto_', true) . '.' . $extension;
-    $rutaDestino = $directorio . $nuevoNombre;
-
-    if (move_uploaded_file($nombreTemporal, $rutaDestino)) {
-        $foto_ruta = $rutaDestino; // Ruta completa o relativa
+        if (move_uploaded_file($nombreTemporal, $rutaDestino)) {
+            $foto_ruta = $nuevoNombre; // Guardar solo el nombre del archivo
+        }
     }
 }
 
 // Procesar POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nombre              = $_POST['nombre'];
-    $ubicacion_id        = $_POST['ubicacion_id'];
-    $marca               = $_POST['marca'];
-    $modelo              = $_POST['modelo'];
-    $serie               = $_POST['serie'];
-    $destinado           = $_POST['destinado'];
-    $forma_adquisicion   = $_POST['forma_adquisicion'];
-    $vida_util           = $_POST['vida_util'];
-    $fecha_adquisicion   = $_POST['fecha_adquisicion'];
-    $fecha_garantia      = $_POST['fecha_garantia'];
-    $fecha_instalacion   = $_POST['fecha_instalacion'];
-    $fabricante          = $_POST['fabricante'];
-    $contacto_fabricante = $_POST['contacto_fabricante'];
-    $pais                = $_POST['pais'];
-    $tecnologia          = $_POST['tecnologia'];
-    $frecuencia          = $_POST['frecuencia'];
-    $voltaje             = $_POST['voltaje'];
-    $corriente           = $_POST['corriente'];
-    $peso                = $_POST['peso'];
-    $capacidad           = $_POST['capacidad'];
-    $fuente_alimentacion = $_POST['fuente_alimentacion'];
-    $codigo               = $_POST['codigo'];
+    // Obtener datos del formulario
+    $datos = [
+        'codigo' => $_POST['codigo'],
+        'nombre' => $_POST['nombre'],
+        'ubicacion_id' => $_POST['ubicacion_id'],
+        'marca' => $_POST['marca'],
+        'modelo' => $_POST['modelo'],
+        'serie' => $_POST['serie'],
+        'destinado' => $_POST['destinado'],
+        'forma_adquisicion' => $_POST['forma_adquisicion'],
+        'vida_util' => $_POST['vida_util'],
+        'fecha_adquisicion' => $_POST['fecha_adquisicion'],
+        'fecha_garantia' => $_POST['fecha_garantia'] ?: null,
+        'fecha_instalacion' => $_POST['fecha_instalacion'] ?: null,
+        'fabricante' => $_POST['fabricante'] ?: null,
+        'contacto_fabricante' => $_POST['contacto_fabricante'] ?: null,
+        'pais' => $_POST['pais'] ?: null,
+        'tecnologia' => $_POST['tecnologia'] ?: null,
+        'frecuencia' => $_POST['frecuencia'] ?: null,
+        'voltaje' => $_POST['voltaje'] ?: null,
+        'corriente' => $_POST['corriente'] ?: null,
+        'peso' => $_POST['peso'] ?: null,
+        'capacidad' => $_POST['capacidad'] ?: null,
+        'fuente_alimentacion' => $_POST['fuente_alimentacion'],
+        'foto' => $foto_ruta
+    ];
+
+    // Validación de campos obligatorios
+    $camposObligatorios = ['codigo', 'nombre', 'ubicacion_id', 'marca', 'modelo', 'serie', 'destinado', 'forma_adquisicion', 'vida_util', 'fecha_adquisicion', 'fuente_alimentacion'];
+    foreach ($camposObligatorios as $campo) {
+        if (empty($datos[$campo])) {
+            $_SESSION['mensaje_exito'] = "El campo '$campo' es obligatorio.";
+            header("Location: ../equipos/registrar.php");
+            exit;
+        }
+    }
 
     try {
+        // Preparar la consulta SQL
         $sql = "INSERT INTO equipos (
                     codigo, nombre, ubicacion_id, marca, modelo, serie, destinado,
                     forma_adquisicion, vida_util, fecha_adquisicion, fecha_garantia,
@@ -69,71 +89,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 )";
 
         $stmt = $conexion->prepare($sql);
-        $stmt->execute([
-            ':codigo'               => $codigo,
-            ':nombre'              => $nombre,
-            ':ubicacion_id'        => $ubicacion_id,
-            ':marca'               => $marca,
-            ':modelo'              => $modelo,
-            ':serie'               => $serie,
-            ':destinado'           => $destinado,
-            ':forma_adquisicion'   => $forma_adquisicion,
-            ':vida_util'           => $vida_util,
-            ':fecha_adquisicion'   => $fecha_adquisicion,
-            ':fecha_garantia'      => $fecha_garantia,
-            ':fecha_instalacion'   => $fecha_instalacion,
-            ':fabricante'          => $fabricante,
-            ':contacto_fabricante' => $contacto_fabricante,
-            ':pais'                => $pais,
-            ':tecnologia'          => $tecnologia,
-            ':frecuencia'          => $frecuencia,
-            ':voltaje'             => $voltaje,
-            ':corriente'           => $corriente,
-            ':peso'                => $peso,
-            ':capacidad'           => $capacidad,
-            ':fuente_alimentacion' => $fuente_alimentacion,
-            ':foto'                => $foto_ruta
-        ]);
+        $stmt->execute($datos);
+
+        $equipo_id = $conexion->lastInsertId();
+
+        // Procesar archivos PDF
+        $tiposDocumentos = [
+            'manual_operativo' => 'Manual Operativo',
+            'manual_servicio' => 'Manual de Servicio',
+            'manual_partes' => 'Manual de Partes',
+            'manual_instalacion' => 'Manual de Instalación',
+            'plano_electrico' => 'Plano Eléctrico',
+            'plano_electronico' => 'Plano Electrónico',
+            'plano_hidraulico' => 'Plano Hidráulico',
+            'plano_neumatico' => 'Plano Neumático'
+        ];
+
+        foreach ($tiposDocumentos as $campo => $tipo) {
+            if (isset($_FILES[$campo]) && $_FILES[$campo]['error'] === UPLOAD_ERR_OK) {
+                $nombreOriginal = basename($_FILES[$campo]['name']);
+                $extension = strtolower(pathinfo($nombreOriginal, PATHINFO_EXTENSION));
+                
+                if ($extension === 'pdf') {
+                    $nuevoNombre = uniqid($campo . '_', true) . '.pdf';
+                    $rutaDestino = $directorioPDFs . $nuevoNombre;
+                    
+                    if (move_uploaded_file($_FILES[$campo]['tmp_name'], $rutaDestino)) {
+                        $sqlDocumento = "INSERT INTO documentos_equipos 
+                                        (equipo_id, tipo_documento, nombre_archivo, nombre_original) 
+                                        VALUES (:equipo_id, :tipo, :archivo, :original)";
+                        
+                        $stmtDoc = $conexion->prepare($sqlDocumento);
+                        $stmtDoc->execute([
+                            ':equipo_id' => $equipo_id,
+                            ':tipo' => $tipo,
+                            ':archivo' => $nuevoNombre,
+                            ':original' => $nombreOriginal
+                        ]);
+                    }
+                }
+            }
+        }
 
         $_SESSION['mensaje_exito'] = '¡Equipo registrado correctamente!';
         header("Location: ../equipos/registrar.php");
         exit;
     } catch (PDOException $e) {
-        echo "Error al guardar el equipo: " . $e->getMessage();
+        $_SESSION['mensaje_exito'] = "Error al guardar el equipo: " . $e->getMessage();
+        header("Location: ../equipos/registrar.php");
+        exit;
     }
+
+} else {
+    header("Location: ../equipos/registrar.php");
+    exit;
 }
-
-$manuales = [
-    'manual_operativo',
-    'manual_servicio',
-    'manual_partes',
-    'manual_instalacion',
-    'plano_electrico',
-    'plano_electronico',
-    'plano_hidraulico',
-    'plano_neumatico'
-];
-
-$rutasManuales = [];
-
-foreach ($manuales as $manual) {
-    if (isset($_FILES[$manual]) && $_FILES[$manual]['error'] === UPLOAD_ERR_OK) {
-        $nombreOriginal = basename($_FILES[$manual]['name']);
-        $extension = strtolower(pathinfo($nombreOriginal, PATHINFO_EXTENSION));
-        if ($extension === 'pdf') {
-            $nuevoNombre = uniqid($manual . '_', true) . '.pdf';
-            $rutaDestino = "../uploads/pdf/" . $nuevoNombre;
-            if (move_uploaded_file($_FILES[$manual]['tmp_name'], $rutaDestino)) {
-                $rutasManuales[$manual] = $nuevoNombre; // Guarda solo el nombre o la ruta relativa
-            } else {
-                $rutasManuales[$manual] = null;
-            }
-        } else {
-            $rutasManuales[$manual] = null;
-        }
-    } else {
-        $rutasManuales[$manual] = null;
-    }
-}
-
 ?>
