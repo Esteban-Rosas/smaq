@@ -2,6 +2,8 @@
 include '../includes/proteccion.php';
 include '../includes/conexion.php';
 
+$esIngeniero = (isset($_SESSION['usuario_rol']) && strtolower(trim($_SESSION['usuario_rol'])) === 'ingeniero');
+
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     die("ID de orden no válido.");
 }
@@ -428,6 +430,13 @@ $facturas = $stmt_facturas->fetchAll(PDO::FETCH_ASSOC);
                 <a href="listado_mantenimiento.php" class="btn btn-secondary">
                     <i class="fas fa-arrow-left me-2"></i> Volver al listado
                 </a>
+
+                <?php if ($esIngeniero): ?>
+                    <a href="editar_orden.php?id=<?= $id ?>" class="btn-edit-order">
+                        <i class="fas fa-edit me-2"></i> Editar Orden
+                    </a>
+                <?php endif; ?>
+
                 <button class="btn btn-primary" onclick="window.print()">
                     <i class="fas fa-print me-2"></i> Imprimir orden
                 </button>
